@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>BC41B649-943C-46B2-9209-341DF5E8050E</string>
+	<key>IDESourceControlProjectName</key>
+	<string>MyBonjour</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>F5A3E0AD53DF18B66774F4A4AF8587EA7B68DAD4</key>
+		<string>https://github.com/JiboStore/MyBonjour.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>MyBonjour.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>F5A3E0AD53DF18B66774F4A4AF8587EA7B68DAD4</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/JiboStore/MyBonjour.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>F5A3E0AD53DF18B66774F4A4AF8587EA7B68DAD4</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>F5A3E0AD53DF18B66774F4A4AF8587EA7B68DAD4</string>
+			<key>IDESourceControlWCCName</key>
+			<string>MyBonjour</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+#import "Bluetooth/BluetoothUtil.h"
+
 @interface ViewController : UIViewController<UITableViewDelegate, UITableViewDataSource>
 
 
