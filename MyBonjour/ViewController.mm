@@ -39,6 +39,7 @@ NSArray *recipes;
 {
     if ( self.isViewLoaded ) {
         [self.tableView reloadData];
+//        [self.tableView setContentOffset:CGPointZero animated:YES];
     }
 }
 
@@ -68,6 +69,7 @@ NSArray *recipes;
     BluetoothServerInfo *bsi = GetManager();
     NSNetService *service = [bsi.arrayServices objectAtIndex:indexPath.row];
     cell.textLabel.text = service.name;
+//    [tableView setContentOffset:CGPointZero animated:YES];
     return cell;
 }
 
