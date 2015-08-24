@@ -73,4 +73,27 @@ NSArray *recipes;
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    long iIndex = indexPath.row;
+    BluetoothServerInfo *bsi = GetManager();
+    if ( [bsi.arrayServices count] > iIndex ) {
+        NSNetService *service = [bsi.arrayServices objectAtIndex:iIndex];
+        [bsi connectToServer:service];
+    }
+}
+
+//- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+//{
+//    NSLog(@"touchesBegan");
+//}
+
+- (IBAction)onPressedSendBroadcast:(id)sender
+{
+    long lCurrentTime = CFAbsoluteTimeGetCurrent();
+    NSLog(@"onPressedSendBroadcast: %ld", lCurrentTime);
+    NSString *szData = [NSString stringWithFormat:@"%ld", lCurrentTime];
+    SendBroadcast([szData UTF8String], [szData length]);
+}
+
 @end

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BluetoothDeviceInfo : NSObject
+@interface BluetoothDeviceInfo : NSObject<NSStreamDelegate>
 
     @property (nonatomic)           BOOL                isServer;
     @property (nonatomic, retain)   NSNetService*       theService;
@@ -19,6 +19,12 @@
 
     - (void) openStreams;
     - (void) closeStreams;
+
+    - (void) sendData:(const char*)pbyData withLength:(int)length;
+
+#pragma NSStreamDelegate
+
+    - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode;
 
 @end
 
@@ -38,6 +44,8 @@
 
 - (void) onClientConnected:(NSNetService*)server inputStream:(NSInputStream*)iStream outputStream:(NSOutputStream*)oStream;
 - (BOOL) connectToServer:(NSNetService*)server;
+
+- (void) sendBroadcast:(const char*)pbyData withLength:(int)length;
 
 #pragma NSNetServiceDelegate
 
@@ -115,10 +123,6 @@
  */
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveService:(NSNetService *)aNetService moreComing:(BOOL)moreComing;
 
-#pragma NSStreamDelegate
-
-- (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode;
-
 
 
 - (void) refreshViewController;
@@ -129,5 +133,6 @@ extern "C" {
     void Initialize();
     void StartServer();
     void StartClient();
+    void SendBroadcast(const char* pbyData, int iLength);
     BluetoothServerInfo* GetManager();
 }

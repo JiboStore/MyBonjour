@@ -34,9 +34,11 @@ static BluetoothServerInfo *meServer;
 
 - (void) openStreams
 {
+    [self.inputStream setDelegate:self];
     [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [self.inputStream open];
     
+    [self.outputStream setDelegate:self];
     [self.outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [self.outputStream open];
 }
@@ -50,6 +52,41 @@ static BluetoothServerInfo *meServer;
     [self.outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [self.outputStream close];
     self.outputStream = nil;
+}
+
+- (void) sendData:(const char*)pbyData withLength:(int)length
+{
+    uint uiMessageSize = sizeof(char) * length;
+    long bytesWritten = -1;
+    bytesWritten = [self.outputStream write:(const uint8_t*)pbyData maxLength:uiMessageSize];
+    NSLog(@"sendData: %d sent: %ld", uiMessageSize, bytesWritten);
+}
+
+#pragma NSStreamDelegate
+
+- (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode
+{
+    NSLog(@"stream handleEvent: %d", eventCode);
+    switch ( eventCode ) {
+        case NSStreamEventOpenCompleted:
+            break;
+        case NSStreamEventHasSpaceAvailable:
+            break;
+        case NSStreamEventHasBytesAvailable:
+        {
+            int iReadSize = 1024;
+            int iBytesRead = 0;
+            char *pbyRead = (char*)malloc(sizeof(char) * iReadSize);
+            iBytesRead = [self.inputStream read:(unsigned char*)pbyRead maxLength:iReadSize];
+            NSLog(@"read data: %s length: %d", pbyRead, iBytesRead);
+            free(pbyRead);
+        }
+        case NSStreamEventErrorOccurred:
+            break;
+        case NSStreamEventEndEncountered:
+            // disconnected
+            break;
+    }
 }
 
 @end
@@ -132,8 +169,30 @@ static BluetoothServerInfo *meServer;
             BluetoothDeviceInfo *bdiServer = [[BluetoothDeviceInfo alloc] initializeAsServer:YES withService:server inputStream:iStream outputStream:oStream];
             [self.listServers setObject:bdiServer forKey:server.name];
             [bdiServer openStreams];
+            [self.theServer stop];
+            [self.theServer release];
+            self.theServer = nil;
+            
+            [self.theClient stop];
+            
+            [bdiServer sendData:"Hello World" withLength:11];
         }
         return bSuccess;
+    }
+
+    - (void) sendBroadcast:(const char*)pbyData withLength:(int)length
+    {
+        NSArray *arrayPeers = nil;
+        if ( self.meServer == 0 ) {
+            arrayPeers = [self.listServers allValues];
+        } else {
+            arrayPeers = [self.listClients allValues];
+        }
+        BluetoothDeviceInfo *pDevice = nil;
+        for ( int i = 0; i < [arrayPeers count]; i++ ) {
+            pDevice = [arrayPeers objectAtIndex:i];
+            [pDevice sendData:pbyData withLength:length];
+        }
     }
 
 #pragma NSNetServiceDelegate
@@ -278,13 +337,6 @@ static BluetoothServerInfo *meServer;
         [self refreshViewController];
     }
 
-#pragma NSStreamDelegate
-
-    - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode
-    {
-        
-    }
-
 
 - (void) refreshViewController
 {
@@ -313,6 +365,11 @@ extern "C"
     BluetoothServerInfo* GetManager()
     {
         return meServer;
+    }
+    
+    void SendBroadcast(const char* pbyData, int iLength)
+    {
+        [meServer sendBroadcast:pbyData withLength:iLength];
     }
     
 }// end extern "C"
