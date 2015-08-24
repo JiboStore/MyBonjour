@@ -83,6 +83,7 @@ static BluetoothServerInfo *meServer;
                 // receive from client, then try to broadcast to other clients
                 SendBroadcast(pbyRead, iBytesRead);
             }
+            ReceiveBroadcast(pbyRead, iBytesRead);
             free(pbyRead);
         }
             break;
@@ -384,6 +385,11 @@ extern "C"
     void SendBroadcast(const char* pbyData, int iLength)
     {
         [meServer sendBroadcast:pbyData withLength:iLength];
+    }
+    
+    void ReceiveBroadcast(const char* pbyData, int iLength)
+    {
+        [[ViewController currentViewController].dataLabel setText:[NSString stringWithFormat:@"RECEIVED: %s", pbyData]];
     }
     
 }// end extern "C"

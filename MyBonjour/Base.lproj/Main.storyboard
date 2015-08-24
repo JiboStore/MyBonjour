@@ -34,11 +34,18 @@
                                     <action selector="onPressedSendBroadcast:" destination="BYZ-38-t0r" eventType="touchDown" id="jSy-vR-mUS"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="DATA:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h0q-Mc-wCa">
+                                <rect key="frame" x="180" y="180" width="241" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <connections>
+                        <outlet property="dataLabel" destination="h0q-Mc-wCa" id="5a2-hY-2O3"/>
                         <outlet property="tableView" destination="JWZ-Nc-Xnu" id="Wy9-b7-oGo"/>
                     </connections>
                 </viewController>

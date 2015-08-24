@@ -134,5 +134,6 @@ extern "C" {
     void StartServer();
     void StartClient();
     void SendBroadcast(const char* pbyData, int iLength);
+    void ReceiveBroadcast(const char* pbyData, int iLength);
     BluetoothServerInfo* GetManager();
 }

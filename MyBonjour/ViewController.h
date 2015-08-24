@@ -14,6 +14,8 @@
 
 @property(nonatomic) IBOutlet UITableView *tableView;
 
+@property(nonatomic) IBOutlet UILabel *dataLabel;
+
 + (ViewController*) currentViewController;
 
 - (void) reloadData;
