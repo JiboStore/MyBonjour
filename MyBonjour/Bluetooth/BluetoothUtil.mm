@@ -79,9 +79,19 @@ static BluetoothServerInfo *meServer;
             char *pbyRead = (char*)malloc(sizeof(char) * iReadSize);
             iBytesRead = [self.inputStream read:(unsigned char*)pbyRead maxLength:iReadSize];
             NSLog(@"read data: %s length: %d", pbyRead, iBytesRead);
+            if ( !self.isServer ) {
+                // receive from client, then try to broadcast to other clients
+                SendBroadcast(pbyRead, iBytesRead);
+            }
             free(pbyRead);
         }
+            break;
         case NSStreamEventErrorOccurred:
+        {
+            NSError *e = [aStream streamError];
+            NSString *szError = [NSString stringWithFormat:@"ERROR: %i (%@)", [e code], [e localizedDescription]];
+            NSLog(@"NSStreamEventErrorOccurred: %@", szError);
+        }
             break;
         case NSStreamEventEndEncountered:
             // disconnected
@@ -146,7 +156,9 @@ static BluetoothServerInfo *meServer;
     - (void) onClientConnected:(NSNetService*)server inputStream:(NSInputStream*)iStream outputStream:(NSOutputStream*)oStream
     {
         BluetoothDeviceInfo *bdiClient = [[BluetoothDeviceInfo alloc] initializeAsServer:NO withService:server inputStream:iStream outputStream:oStream];
-        [self.listClients setObject:bdiClient forKey:server.name];
+//        [self.listClients setObject:bdiClient forKey:server.name]; // cannot use my name
+        NSString* nsi = [NSString stringWithFormat:@"%ld", (long)CFAbsoluteTimeGetCurrent()];
+        [self.listClients setObject:bdiClient forKey:nsi];
         [bdiClient openStreams];
     }
 
@@ -268,9 +280,11 @@ static BluetoothServerInfo *meServer;
         NSLog(@"netServiceDidAcceptConnectionWithInputStream: %@", sender.name);
         
         // I am server
-        [self.theClient stop];      // stop searching
-        [self.theClient release];   // release
-        self.theClient = nil;       // mark as server
+        if ( self.theClient != nil ) {
+            [self.theClient stop];      // stop searching
+            [self.theClient release];   // release
+            self.theClient = nil;       // mark as server
+        }
         
         // Due to a bug <rdar://problem/15626440>, this method is called on some unspecified
         // queue rather than the queue associated with the net service (which in this case
