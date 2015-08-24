@@ -12,6 +12,11 @@
 
 @interface ViewController : UIViewController<UITableViewDelegate, UITableViewDataSource>
 
+@property(nonatomic) IBOutlet UITableView *tableView;
+
++ (ViewController*) currentViewController;
+
+- (void) reloadData;
 
 @end
 
