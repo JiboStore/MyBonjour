@@ -25,4 +25,5 @@
 
 extern "C" {
     void StartAdvertising();
+    void StartSearch();
 }

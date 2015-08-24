@@ -38,10 +38,15 @@ static BluetoothServerInfo *meServer;
 extern "C"
 {
     
-void StartAdvertising()
-{
-    meServer = [[BluetoothServerInfo alloc] init];
-    [meServer startServer];
-}
+    void StartAdvertising()
+    {
+        meServer = [[BluetoothServerInfo alloc] init];
+        [meServer startServer];
+    }
+    
+    void StartSearch()
+    {
+        
+    }
     
 }// end extern "C"
