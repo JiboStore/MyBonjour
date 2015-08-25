@@ -34,32 +34,64 @@ static BluetoothServerInfo *meServer;
 
 - (void) openStreams
 {
-    [self.inputStream setDelegate:self];
-    [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    [self.inputStream open];
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self.inputStream setDelegate:self];
+        [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [self.inputStream open];
+        
+        [self.outputStream setDelegate:self];
+        [self.outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [self.outputStream open];
+//    });
     
-    [self.outputStream setDelegate:self];
-    [self.outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    [self.outputStream open];
+//    [self.inputStream setDelegate:self];
+//    [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+//    [self.inputStream open];
+//    
+//    [self.outputStream setDelegate:self];
+//    [self.outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+//    [self.outputStream open];
 }
 
 - (void) closeStreams
 {
-    [self.inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    [self.inputStream close];
-    self.inputStream = nil;
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self.inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [self.inputStream close];
+        self.inputStream = nil;
+        
+        [self.outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [self.outputStream close];
+        self.outputStream = nil;
+//    });
     
-    [self.outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    [self.outputStream close];
-    self.outputStream = nil;
+//    [self.inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+//    [self.inputStream close];
+//    self.inputStream = nil;
+//    
+//    [self.outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+//    [self.outputStream close];
+//    self.outputStream = nil;
 }
 
 - (void) sendData:(const char*)pbyData withLength:(int)length
 {
-    uint uiMessageSize = sizeof(char) * length;
-    long bytesWritten = -1;
-    bytesWritten = [self.outputStream write:(const uint8_t*)pbyData maxLength:uiMessageSize];
-    NSLog(@"sendData: %d sent: %ld", uiMessageSize, bytesWritten);
+//    uint uiMessageSize = sizeof(char) * length;
+//    long bytesWritten = -1;
+//    bytesWritten = [self.outputStream write:(const uint8_t*)pbyData maxLength:uiMessageSize];
+//    NSLog(@"sendData: %d sent: %ld", uiMessageSize, bytesWritten);
+    
+    char *pData = new char[length];
+    memcpy(pData, pbyData, length);
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        uint uiMessageSize = sizeof(char) * length;
+        long bytesWritten = -1;
+//        bytesWritten = [self.outputStream write:(const uint8_t*)pbyData maxLength:uiMessageSize];
+        bytesWritten = [self.outputStream write:(const uint8_t*)pData maxLength:uiMessageSize];
+        NSLog(@"sendData: %d sent: %ld", uiMessageSize, bytesWritten);
+        delete[] pData;
+    });
 }
 
 #pragma NSStreamDelegate
